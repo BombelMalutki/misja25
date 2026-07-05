@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Misja 25</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+<script>
+/* ============================================================
+   🔒  KONFIGURACJA — WERSJA UTWARDZONA (NIE EDYTUJ RĘCZNIE)
+   ============================================================
+   Hasła są zahaszowane (SHA-256), a adres i godzina finału
+   zaszyfrowane (AES-GCM) — aplikacja odczyta je dopiero po
+   poprawnym wpisaniu wszystkich 10 haseł.
+   Zmiany rób w zwykłym index.html i poproś o przebudowę tej wersji.
+   ============================================================ */
+const KONFIGURACJA = {
+
+  tytul: "MISJA 25",
+  kontakt: "Grzesiek · 695 854 413",         // ← Twój numer (widoczny w zasadach i podpowiedziach)
+
+  etapy: [
+    { data: "31.08.2024", hasloHash: "294e21842fbc09b90d769a690bff79426cf09eb668d33417d74e946498e026a3",
+      wspomnienie: "Shisha i Żabson",
+      podpowiedzi: ["Shisha i Żabson", "Miejsce poznania — Amar Beirut"] },
+
+    { data: "31.10.2024", hasloHash: "3163f49229b1eeb20def5e92d7e2e5892d49e617594e9617914b491cb8bb227f",
+      wspomnienie: "Szeryf Chudy i pastereczka Bou",
+      podpowiedzi: ["Szeryf Chudy i pastereczka Bou", "Halloween — Esco"] },
+
+    { data: "06.12.2024", hasloHash: "a1db6f3ea657daacf4cd08661cef46a57ba8241d510322beef5f2b38090def28",
+      wspomnienie: "„Wyłącz to w tym momencie, bo nie otwieram…”",
+      podpowiedzi: ["„Wyłącz to w tym momencie, bo nie otwieram…”", "Wigilia firmowa — SkyFall"] },
+
+    { data: "08.03.2025", hasloHash: "778960540a3b26715d5abf9a7854c43656b82742236faf9c2f0f97d25d0b084f",
+      wspomnienie: "Ładna pogoda, ale mało zwierzątek",
+      podpowiedzi: ["Ładna pogoda, ale mało zwierzątek", "ZOO"] },
+
+    { data: "07.06.2025", hasloHash: "b90d59ac1eddb32a7c5d9ff8f781fc0737dae2636f4e5ddd3eb9ddcfca6c8a28",
+      wspomnienie: "Reset wśród drzew",
+      podpowiedzi: ["Reset wśród drzew", "Hamakowanie — Łużowa Góra"] },
+
+    { data: "25.06.2025", hasloHash: "be192bf24e2b454f9dda59fdaee042bf46c7161c62d6a3e13d793be7f8f62e1a",
+      wspomnienie: "Jaki kraj, taki Elon i Kim",
+      podpowiedzi: ["Jaki kraj, taki Elon i Kim", "Melt Museum"] },
+
+    { data: "13.07.2025", hasloHash: "70cb4d96d419a82ca8eed58906c1e6a00f887f6c58ee4f6e74cb70490eb945f4",
+      wspomnienie: "Najładniejsze schody w Warszawie",
+      podpowiedzi: ["Najładniejsze schody w Warszawie", "MSN — Muzeum Sztuki Nowoczesnej"] },
+
+    { data: "28.08.2025", hasloHash: "5ca8b690dcf758a5b4bca7ffd05bd886aacff9a8a70b9fbbe235b00d30750e17",
+      wspomnienie: "Bicek rośnie w upale",
+      podpowiedzi: ["Bicek rośnie w upale", "Siłownia plenerowa"] },
+
+    { data: "20.12.2025", hasloHash: "5f0081f931158ad7cd5a83b0713d4c31224cb943266847ba60bcc670296d4ff6",
+      wspomnienie: "Wiadomo, co na przystawkę",
+      podpowiedzi: ["Wiadomo, co na przystawkę", "Rico"] },
+
+    { data: "08.03.2026", hasloHash: "3ecd51adbe3a1c30f58b63e308b54bda422a19bd6ba8899545225cb43c03a29e",
+      wspomnienie: "Fota w lustrze na wystawie",
+      podpowiedzi: ["Fota w lustrze na wystawie", "Matcha — Happa to Mame"] }
+  ],
+
+  /* Wiadomości przy progach punktowych (prezenty). Prezenty czekają
+     w domu — możesz zmienić treści, usunąć próg albo dopisać kolejny. */
+  progi: {
+    "5":  "🎁 5 punktów! Pierwszy prezent czeka na Ciebie w domu — upomnij się o niego. 😉",
+    "10": "🎁 10 punktów! Prezent numer dwa już wie, że po niego wracasz…",
+    "15": "🎁 Połowa kliszy wywołana! Trzeci prezent do odbioru w domu.",
+    "20": "🎁 20 punktów! W domu czeka ostatni mały prezent… a potem został już tylko wielki finał."
+  },
+
+  /* Finał — pokaże się po zdobyciu wszystkich 25 punktów. */
+  final: {
+    naglowek:  "Wszystkiego najlepszego! ❤️",
+    wiadomosc: "10 miejsc, 10 wspomnień — a najlepsze dopiero przed nami. Widzimy się w sobotę! Przebierz się w coś ładnego i przyjedź tu:",
+    zaszyfrowane: { iv: "8v6Lg/yQhxIqDgBK", ct: "k6yzhXjz9r7m2uBBbqPasGVFggeZ/aOhsuJTtIEDHmoYI0ipapZ1d2sMyDxSQDwl2JhU+Vzbbbid2zq766olPKr+09w9dK5XP4LVmbFQ8vvqXpylmr5tpkidP6wzZi/9InloPtEU0KBG7qp4vd7NpMw9LpypH5g9trM=" }
+  }
+};
+/* ============================================================
+   ⛔  KONIEC KONFIGURACJI — poniżej już nic nie zmieniaj
+   ============================================================ */
+</script>
+
+<style>
+:root{
+  --paper:#FFF9EE;
+  --ink:#1A1611;
+  --gold:#F2B705;
+  --amber:#E8940A;
+  --red:#D23B2E;
+  --green:#2F7D52;
+  --muted:#8A8070;
+  --strip:#221D15;
+  --frame:#3A3226;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Archivo","Segoe UI",system-ui,sans-serif;
+  font-size:17px;line-height:1.55;
+  min-height:100dvh;
+}
+.szpula{max-width:480px;margin:0 auto;padding:0 16px 48px}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- nagłówek jak nadruk na kliszy ---------- */
+header{
+  background:var(--ink);color:var(--gold);
+  font-family:"Courier Prime","Courier New",monospace;
+  font-weight:700;letter-spacing:.12em;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 16px;font-size:14px;
+  position:sticky;top:0;z-index:5;
+}
+header .pkt{color:var(--paper)}
+header .zasady-btn{
+  background:none;border:1.5px solid var(--gold);color:var(--gold);
+  border-radius:50%;width:26px;height:26px;line-height:1;
+  font-family:inherit;font-weight:700;margin-left:10px;flex:none;
+}
+
+/* ---------- pasek kliszy (postęp) ---------- */
+.klisza{
+  background:var(--strip);border-radius:10px;
+  padding:7px 10px;margin:18px 0 10px;
+  box-shadow:0 3px 10px rgba(26,22,17,.18);
+}
+.perforacja{
+  height:6px;margin:2px 2px;
+  background:repeating-linear-gradient(90deg,
+    transparent 0 5px, var(--paper) 5px 12px, transparent 12px 17px);
+  border-radius:2px;opacity:.9;
+}
+.klatki{display:flex;gap:5px;justify-content:space-between;padding:5px 1px}
+.klatka{
+  flex:1;aspect-ratio:4/5;border-radius:3px;
+  background:var(--frame);
+  color:#6E6350;font-family:"Courier Prime",monospace;font-weight:700;font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+}
+.klatka.aktualna{border:2px dashed var(--gold);color:var(--gold);animation:puls 1.8s ease-in-out infinite}
+.klatka.gotowa{background:linear-gradient(160deg,var(--gold),var(--amber));color:var(--ink);border:none}
+.klatka.blysk{animation:wywolanie .9s ease-out}
+@keyframes puls{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes wywolanie{0%{background:#fff;box-shadow:0 0 18px #fff}100%{}}
+
+/* ---------- progi / prezenty ---------- */
+.progi{display:flex;gap:6px;justify-content:space-between;margin-bottom:22px}
+.prog{
+  flex:1;text-align:center;
+  font-family:"Courier Prime",monospace;font-weight:700;font-size:12.5px;
+  border:1.5px solid var(--ink);border-radius:999px;padding:4px 0;
+  background:#fff;color:var(--ink);
+}
+.prog.zdobyty{background:var(--gold);border-color:var(--gold)}
+
+/* ---------- karta etapu ---------- */
+.karta{
+  background:#fff;border:2px solid var(--ink);border-radius:14px;
+  padding:22px 18px 20px;
+  box-shadow:5px 5px 0 var(--ink);
+}
+.brew{
+  font-family:"Courier Prime",monospace;font-weight:700;
+  font-size:13px;letter-spacing:.22em;color:var(--muted);
+  text-transform:uppercase;margin-bottom:10px;
+}
+.data-stempel{
+  font-family:"Courier Prime",monospace;font-weight:700;
+  font-size:clamp(34px,11vw,46px);letter-spacing:.04em;
+  color:var(--red);
+  border:2.5px solid var(--red);border-radius:6px;
+  display:inline-block;padding:4px 14px;transform:rotate(-1.5deg);
+  margin-bottom:14px;
+}
+.pytanie{margin-bottom:18px}
+.pole{
+  width:100%;font-family:"Courier Prime",monospace;font-weight:700;
+  font-size:18px;letter-spacing:.08em;text-transform:uppercase;
+  padding:13px 12px;border:2px solid var(--ink);border-radius:8px;
+  background:var(--paper);color:var(--ink);
+}
+.pole::placeholder{color:#B9AE99;letter-spacing:.05em}
+.przycisk{
+  width:100%;margin-top:12px;
+  background:var(--red);color:var(--paper);border:none;border-radius:8px;
+  font-family:"Archivo Black","Arial Black",sans-serif;
+  font-size:17px;letter-spacing:.04em;text-transform:uppercase;
+  padding:14px;transition:transform .08s ease;
+}
+.przycisk:active{transform:scale(.97)}
+.blad{
+  color:var(--red);font-weight:600;font-size:15px;
+  min-height:22px;margin-top:9px;
+}
+.trzesienie{animation:trzes .35s}
+@keyframes trzes{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+.podpowiedz-btn{
+  background:none;border:none;color:var(--muted);
+  text-decoration:underline;font-size:15px;margin-top:14px;padding:4px;
+}
+.podpowiedz-box{
+  margin-top:12px;background:var(--paper);border:1.5px dashed var(--muted);
+  border-radius:8px;padding:12px 14px;font-size:15.5px;
+}
+.podpowiedz-box img{max-width:100%;border-radius:6px;display:block;margin-top:8px}
+.podpowiedz-box > * + *{margin-top:8px}
+
+/* ---------- wywołane klatki (podsumowanie) ---------- */
+details.album{margin-top:26px}
+details.album summary{
+  cursor:pointer;font-family:"Courier Prime",monospace;font-weight:700;
+  letter-spacing:.12em;font-size:14px;color:var(--muted);text-transform:uppercase;
+}
+details.album ul{list-style:none;margin-top:10px}
+details.album li{
+  padding:9px 2px;border-bottom:1px solid #E8DFCB;font-size:15.5px;
+  display:flex;gap:10px;align-items:baseline;
+}
+details.album li .ok{color:var(--green);font-weight:700;flex:none}
+details.album li .kiedy{font-family:"Courier Prime",monospace;font-weight:700;flex:none}
+details.album li .co{color:var(--muted)}
+
+/* ---------- ekrany intro / finał ---------- */
+.ekran{display:none}
+.ekran.widoczny{display:block}
+
+.pudelko{
+  background:var(--ink);color:var(--paper);border-radius:16px;
+  padding:30px 22px;margin-top:26px;
+  box-shadow:6px 6px 0 var(--gold);
+}
+.pudelko .brew{color:var(--gold)}
+.tytul-glowny{
+  font-family:"Archivo Black","Arial Black",sans-serif;
+  font-size:clamp(44px,15vw,64px);line-height:1.02;color:var(--gold);
+  margin:6px 0 4px;
+}
+.podtytul{
+  font-family:"Courier Prime",monospace;font-weight:700;
+  letter-spacing:.14em;font-size:13.5px;color:var(--paper);opacity:.85;
+  margin-bottom:22px;text-transform:uppercase;
+}
+ol.reguly{margin:0 0 20px 20px}
+ol.reguly li{margin-bottom:11px;font-size:16px}
+.drobne{font-size:13.5px;opacity:.75;line-height:1.5}
+.start-btn{
+  width:100%;margin-top:20px;
+  background:var(--gold);color:var(--ink);border:none;border-radius:8px;
+  font-family:"Archivo Black","Arial Black",sans-serif;
+  font-size:18px;text-transform:uppercase;letter-spacing:.04em;padding:15px;
+}
+
+/* finał */
+#ekran-final .pudelko{text-align:center}
+.final-pkt{
+  font-family:"Archivo Black",sans-serif;font-size:56px;color:var(--gold);line-height:1;
+}
+.adres-karta{
+  background:var(--paper);color:var(--ink);border-radius:12px;
+  padding:18px 16px;margin-top:20px;
+}
+.adres-karta .gdzie{
+  font-family:"Courier Prime",monospace;font-weight:700;font-size:21px;line-height:1.35;
+}
+.adres-karta .kiedy{
+  font-family:"Archivo Black",sans-serif;font-size:30px;margin-top:6px;
+}
+.mapa-link{
+  display:inline-block;margin-top:14px;background:var(--red);color:var(--paper);
+  text-decoration:none;font-weight:700;border-radius:8px;padding:11px 20px;
+}
+
+/* ---------- modal ---------- */
+.zaslona{
+  position:fixed;inset:0;background:rgba(26,22,17,.72);
+  display:none;align-items:center;justify-content:center;padding:20px;z-index:20;
+}
+.zaslona.widoczna{display:flex}
+.modal{
+  background:#fff;border-radius:14px;max-width:420px;width:100%;
+  padding:26px 20px;text-align:center;border:2px solid var(--ink);
+  box-shadow:6px 6px 0 var(--gold);
+  max-height:85dvh;overflow:auto;
+}
+.modal .duze{font-size:44px;line-height:1}
+.modal h2{
+  font-family:"Archivo Black",sans-serif;font-size:21px;margin:10px 0 4px;
+  text-transform:uppercase;letter-spacing:.03em;
+}
+.modal .plus{color:var(--green);font-family:"Courier Prime",monospace;font-weight:700;font-size:17px}
+.modal .wspomnienie{
+  margin-top:14px;background:var(--paper);border-radius:8px;padding:13px 14px;
+  font-size:15.5px;text-align:left;
+}
+.modal .prezent{
+  margin-top:14px;background:var(--gold);border-radius:8px;padding:13px 14px;
+  font-weight:600;font-size:15.5px;text-align:left;
+}
+.modal .przycisk{margin-top:18px}
+
+#konfetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <span id="naglowek-tytul">MISJA 25</span>
+  <span><span class="pkt" id="pkt">0 / 25 PKT</span><button class="zasady-btn" id="zasady-btn" aria-label="Pokaż zasady">?</button></span>
+</header>
+
+<div class="szpula">
+
+  <!-- ================= EKRAN: INTRO / ZASADY ================= -->
+  <section class="ekran" id="ekran-intro">
+    <div class="pudelko">
+      <div class="brew">Gra terenowa · edycja limitowana</div>
+      <div class="tytul-glowny" id="intro-tytul">MISJA 25</div>
+      <div class="podtytul">10 miejsc · 10 wspomnień · 25 punktów</div>
+      <ol class="reguly">
+        <li>Na ekranie zobaczysz <strong>datę</strong>. To dzień, który spędziliśmy razem w pewnym miejscu w Warszawie lub okolicy.</li>
+        <li>Przypomnij sobie, gdzie to było — i jedź tam. Zacięło się? Masz <strong>dwie podpowiedzi</strong>: najpierw drobny trop, na końcu nazwa miejsca.</li>
+        <li>Na miejscu <strong>zrób zdjęcie i wyślij mi je</strong>. 📸 Jeśli miejsce się zgadza — odeślę Ci hasło. (A jeśli nie, napiszę Ci, czy jest ciepło, czy zimno. 🙂)</li>
+        <li>Wpisz hasło tutaj. Każde miejsce to <strong>2,5 pkt</strong> — jedna wywołana klatka na Twojej kliszy.</li>
+        <li>Co 5 punktów coś na Ciebie czeka… a przy <strong>25 punktach</strong> dowiesz się, gdzie i o której zaczynają się Twoje urodziny. 🎂</li>
+      </ol>
+      <p class="drobne">Graj w zwykłej karcie przeglądarki (nie w trybie incognito) i nie czyść danych przeglądarki — tutaj zapisuje się Twój postęp. Gdy utkniesz albo nie masz pewności, czy to właściwe miejsce: <span id="intro-kontakt"></span>. 💛</p>
+      <button class="start-btn" id="start-btn">Załaduj film 🎞️</button>
+    </div>
+  </section>
+
+  <!-- ================= EKRAN: GRA ================= -->
+  <section class="ekran" id="ekran-gra">
+
+    <div class="klisza" aria-label="Postęp gry">
+      <div class="perforacja"></div>
+      <div class="klatki" id="klatki"></div>
+      <div class="perforacja"></div>
+    </div>
+
+    <div class="progi" id="progi"></div>
+
+    <div class="karta" id="karta">
+      <div class="brew">Klatka <span id="nr-etapu">1</span> / 10</div>
+      <div><span class="data-stempel" id="data-etapu">—</span></div>
+      <p class="pytanie">Gdzie byliśmy tego dnia? Pojedź tam i wyślij mi stamtąd zdjęcie. 📸</p>
+      <input class="pole" id="pole-haslo" placeholder="HASŁO ODE MNIE"
+             autocomplete="off" autocapitalize="characters" spellcheck="false">
+      <button class="przycisk" id="sprawdz-btn">Wywołaj klatkę</button>
+      <div class="blad" id="blad" role="alert"></div>
+      <button class="podpowiedz-btn" id="podpowiedz-btn">Utknęłaś? Weź podpowiedź (1 z 2)</button>
+      <div class="podpowiedz-box" id="podpowiedz-box" hidden></div>
+    </div>
+
+    <details class="album" id="album" hidden>
+      <summary>Wywołane klatki (<span id="ile-gotowych">0</span>)</summary>
+      <ul id="album-lista"></ul>
+    </details>
+
+  </section>
+
+  <!-- ================= EKRAN: FINAŁ ================= -->
+  <section class="ekran" id="ekran-final">
+    <div class="pudelko">
+      <div class="brew">Film wywołany · 10 / 10</div>
+      <div class="final-pkt">25 PKT</div>
+      <div class="tytul-glowny" id="final-naglowek" style="font-size:clamp(30px,9vw,42px)">Wszystkiego najlepszego!</div>
+      <p id="final-wiadomosc" style="margin-top:10px"></p>
+      <div class="adres-karta">
+        <div class="gdzie">📍 <span id="final-adres"></span></div>
+        <div class="kiedy">🕖 <span id="final-godzina"></span></div>
+        <a class="mapa-link" id="mapa-link" href="#" target="_blank" rel="noopener">Prowadź mnie ▸</a>
+      </div>
+      <p class="drobne" style="margin-top:18px">Do zobaczenia! ❤️</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= MODAL SUKCESU ================= -->
+<div class="zaslona" id="zaslona">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="duze">📸</div>
+    <h2 id="modal-tytul">Klatka wywołana!</h2>
+    <div class="plus">+2,5 pkt</div>
+    <div class="wspomnienie" id="modal-wspomnienie" hidden></div>
+    <div class="prezent" id="modal-prezent" hidden></div>
+    <button class="przycisk" id="modal-btn">Dalej ▸</button>
+  </div>
+</div>
+
+<canvas id="konfetti"></canvas>
+
+<script>
+(function(){
+"use strict";
+
+var K = KONFIGURACJA;
+var KLUCZ = "misja25_postep";
+var PKT_ZA_ETAP = 2.5;
+
+/* ---------- stan ---------- */
+function wczytaj(){
+  try{
+    var s = JSON.parse(localStorage.getItem(KLUCZ)) || {};
+    return {gotowe: s.gotowe || 0, intro: !!s.intro, hasla: s.hasla || []};
+  }catch(e){ return {gotowe:0, intro:false, hasla:[]}; }
+}
+function zapisz(){ try{ localStorage.setItem(KLUCZ, JSON.stringify(stan)); }catch(e){} }
+var stan = wczytaj();
+
+/* reset do testów: otwórz stronę z końcówką ?reset */
+if(location.search.indexOf("reset") !== -1){
+  localStorage.removeItem(KLUCZ);
+  stan = {gotowe:0, intro:false, hasla:[]};
+  history.replaceState(null, "", location.pathname);
+}
+
+/* ---------- pomocnicze ---------- */
+function $(id){ return document.getElementById(id); }
+function norm(s){
+  return String(s).toLowerCase()
+    .replace(/ł/g,"l")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]/g,"");
+}
+function sha256hex(s){
+  return crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)).then(function(buf){
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){
+      return ("0" + b.toString(16)).slice(-2);
+    }).join("");
+  });
+}
+function b64naBajty(b64){
+  var bin = atob(b64), a = new Uint8Array(bin.length);
+  for(var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i);
+  return a;
+}
+function deszyfrujFinal(){
+  var dane = K.final.zaszyfrowane;
+  return crypto.subtle.digest("SHA-256", new TextEncoder().encode(stan.hasla.join("|")))
+    .then(function(surowy){ return crypto.subtle.importKey("raw", surowy, "AES-GCM", false, ["decrypt"]); })
+    .then(function(klucz){ return crypto.subtle.decrypt({name:"AES-GCM", iv: b64naBajty(dane.iv)}, klucz, b64naBajty(dane.ct)); })
+    .then(function(buf){ return JSON.parse(new TextDecoder().decode(buf)); });
+}
+function pktTekst(n){ return String(n * PKT_ZA_ETAP).replace(".", ","); }
+
+var bledy = [
+  "To nie to hasło. Sprawdź literówki 🔍",
+  "Prawie… ale nie. Spróbuj jeszcze raz!",
+  "Nie tym razem. Na pewno jesteś we właściwym miejscu? 😉"
+];
+var nrBledu = 0;
+
+/* ---------- render ---------- */
+function pokazEkran(id){
+  ["ekran-intro","ekran-gra","ekran-final"].forEach(function(e){
+    $(e).classList.toggle("widoczny", e === id);
+  });
+}
+
+function rysuj(){
+  $("pkt").textContent = pktTekst(stan.gotowe) + " / 25 PKT";
+  $("naglowek-tytul").textContent = K.tytul;
+  $("intro-tytul").textContent = K.tytul;
+  $("intro-kontakt").textContent = K.kontakt;
+
+  /* klisza */
+  var kl = $("klatki"); kl.innerHTML = "";
+  for(var i = 0; i < 10; i++){
+    var d = document.createElement("div");
+    d.className = "klatka" + (i < stan.gotowe ? " gotowa" : (i === stan.gotowe ? " aktualna" : ""));
+    d.textContent = (i < stan.gotowe) ? "✓" : (i + 1);
+    kl.appendChild(d);
+  }
+
+  /* progi */
+  var pr = $("progi"); pr.innerHTML = "";
+  var punkty = stan.gotowe * PKT_ZA_ETAP;
+  Object.keys(K.progi).map(Number).sort(function(a,b){return a-b;}).forEach(function(p){
+    var c = document.createElement("div");
+    c.className = "prog" + (punkty >= p ? " zdobyty" : "");
+    c.textContent = "🎁 " + p;
+    pr.appendChild(c);
+  });
+  var f = document.createElement("div");
+  f.className = "prog" + (punkty >= 25 ? " zdobyty" : "");
+  f.textContent = "🎂 25";
+  pr.appendChild(f);
+
+  /* album wywołanych klatek */
+  var lista = $("album-lista"); lista.innerHTML = "";
+  for(var j = 0; j < stan.gotowe; j++){
+    var li = document.createElement("li");
+    var ok = document.createElement("span"); ok.className = "ok"; ok.textContent = "✓";
+    var kiedy = document.createElement("span"); kiedy.className = "kiedy"; kiedy.textContent = K.etapy[j].data;
+    li.appendChild(ok); li.appendChild(kiedy);
+    if(K.etapy[j].wspomnienie){
+      var co = document.createElement("span"); co.className = "co";
+      co.textContent = K.etapy[j].wspomnienie;
+      li.appendChild(co);
+    }
+    lista.appendChild(li);
+  }
+  $("album").hidden = (stan.gotowe === 0);
+  $("ile-gotowych").textContent = stan.gotowe;
+
+  /* który ekran */
+  if(stan.gotowe >= 10){
+    $("final-naglowek").textContent = K.final.naglowek;
+    $("final-wiadomosc").textContent = K.final.wiadomosc;
+    $("final-adres").textContent = "…";
+    $("final-godzina").textContent = "…";
+    deszyfrujFinal().then(function(f){
+      $("final-adres").textContent = f.adres;
+      $("final-godzina").textContent = f.godzina;
+      $("mapa-link").href = "https://www.google.com/maps/search/?api=1&query=" +
+        encodeURIComponent(f.adres);
+    }).catch(function(){
+      $("final-adres").textContent = "Zadzwoń do mnie 📞 " + K.kontakt;
+      $("final-godzina").textContent = "";
+      $("mapa-link").hidden = true;
+    });
+    pokazEkran("ekran-final");
+    return;
+  }
+  if(!stan.intro){ pokazEkran("ekran-intro"); return; }
+
+  var etap = K.etapy[stan.gotowe];
+  $("nr-etapu").textContent = stan.gotowe + 1;
+  $("data-etapu").textContent = etap.data;
+  $("pole-haslo").value = "";
+  $("blad").textContent = "";
+  resetujPodpowiedzi();
+  pokazEkran("ekran-gra");
+}
+
+/* ---------- logika gry ---------- */
+function sprawdz(){
+  var etap = K.etapy[stan.gotowe];
+  if(!etap) return;
+  var proba = norm($("pole-haslo").value);
+  if(!proba){
+    $("blad").textContent = "Wpisz hasło, które Ci wysłałem 🙂";
+    return;
+  }
+  sha256hex(proba).then(function(hx){
+    if(hx === etap.hasloHash){
+      stan.hasla.push(proba);
+      stan.gotowe++;
+      zapisz();
+      otworzModal(etap);
+    }else{
+      $("blad").textContent = bledy[nrBledu % bledy.length];
+      nrBledu++;
+      var karta = $("karta");
+      karta.classList.remove("trzesienie");
+      void karta.offsetWidth;
+      karta.classList.add("trzesienie");
+    }
+  });
+}
+
+function otworzModal(etap){
+  var punkty = stan.gotowe * PKT_ZA_ETAP;
+  $("modal-tytul").textContent = "Klatka " + stan.gotowe + " wywołana!";
+
+  var w = $("modal-wspomnienie");
+  w.hidden = !etap.wspomnienie;
+  w.textContent = etap.wspomnienie || "";
+
+  var p = $("modal-prezent");
+  var wiadomoscProgu = K.progi[String(punkty)];
+  p.hidden = !wiadomoscProgu;
+  p.textContent = wiadomoscProgu || "";
+
+  $("modal-btn").textContent = (stan.gotowe >= 10) ? "Zobacz finał ✨" : "Dalej ▸";
+  $("zaslona").classList.add("widoczna");
+  konfetti(wiadomoscProgu ? 160 : 70);
+}
+
+function zamknijModal(){
+  $("zaslona").classList.remove("widoczna");
+  if(stan.gotowe >= 10){ konfetti(260); }
+  rysuj();
+}
+
+var stanPodpowiedzi = 0;
+
+function resetujPodpowiedzi(){
+  stanPodpowiedzi = 0;
+  var box = $("podpowiedz-box");
+  box.hidden = true;
+  box.innerHTML = "";
+  var btn = $("podpowiedz-btn");
+  btn.hidden = false;
+  btn.textContent = "Utknęłaś? Weź podpowiedź (1 z 2)";
+}
+
+function dodajDoBoxa(tekst, prefix){
+  var box = $("podpowiedz-box");
+  if(/^https?:\/\//i.test(tekst)){
+    var img = document.createElement("img");
+    img.src = tekst; img.alt = "Podpowiedź — zdjęcie miejsca"; img.loading = "lazy";
+    box.appendChild(img);
+  }else{
+    var p = document.createElement("p");
+    p.textContent = (prefix || "") + tekst;
+    box.appendChild(p);
+  }
+  box.hidden = false;
+}
+
+function pokazPodpowiedz(){
+  var etap = K.etapy[stan.gotowe];
+  if(!etap) return;
+  var lista = etap.podpowiedzi || [];
+  var btn = $("podpowiedz-btn");
+  if(stanPodpowiedzi < lista.length){
+    dodajDoBoxa(lista[stanPodpowiedzi], "💡 ");
+    stanPodpowiedzi++;
+    if(stanPodpowiedzi < lista.length){
+      btn.textContent = "Weź ostatnią podpowiedź (2 z 2)";
+    }else{
+      btn.textContent = "Nadal nic? 📞";
+    }
+  }else{
+    dodajDoBoxa("Napisz do mnie albo zadzwoń — uratuję sytuację. 📸 (" + K.kontakt + ")", "");
+    btn.hidden = true;
+  }
+}
+
+/* ---------- konfetti ---------- */
+function konfetti(ile){
+  if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var c = $("konfetti"), ctx = c.getContext("2d");
+  c.width = innerWidth; c.height = innerHeight;
+  var kolory = ["#F2B705","#D23B2E","#2F7D52","#FFF9EE","#E8940A"];
+  var czastki = [];
+  for(var i = 0; i < ile; i++){
+    czastki.push({
+      x: Math.random() * c.width,
+      y: -20 - Math.random() * c.height * 0.4,
+      w: 5 + Math.random() * 6,
+      h: 8 + Math.random() * 8,
+      vy: 2.2 + Math.random() * 3.2,
+      vx: -1.2 + Math.random() * 2.4,
+      r: Math.random() * Math.PI,
+      vr: -0.12 + Math.random() * 0.24,
+      k: kolory[i % kolory.length]
+    });
+  }
+  var start = performance.now();
+  function klatkaAnim(t){
+    ctx.clearRect(0, 0, c.width, c.height);
+    czastki.forEach(function(p){
+      p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.r);
+      ctx.fillStyle = p.k;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    if(t - start < 2600){ requestAnimationFrame(klatkaAnim); }
+    else{ ctx.clearRect(0, 0, c.width, c.height); }
+  }
+  requestAnimationFrame(klatkaAnim);
+}
+
+/* ---------- zdarzenia ---------- */
+$("start-btn").addEventListener("click", function(){
+  stan.intro = true; zapisz(); rysuj();
+});
+$("zasady-btn").addEventListener("click", function(){
+  var naIntro = $("ekran-intro").classList.contains("widoczny");
+  if(naIntro && stan.intro){ rysuj(); }
+  else if(stan.gotowe < 10){
+    $("start-btn").textContent = stan.intro ? "Wróć do gry ▸" : "Załaduj film 🎞️";
+    pokazEkran("ekran-intro");
+  }
+});
+$("sprawdz-btn").addEventListener("click", sprawdz);
+$("pole-haslo").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){ e.preventDefault(); sprawdz(); }
+});
+$("podpowiedz-btn").addEventListener("click", pokazPodpowiedz);
+$("modal-btn").addEventListener("click", zamknijModal);
+
+rysuj();
+})();
+</script>
+</body>
+</html>
